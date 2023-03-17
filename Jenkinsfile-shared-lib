@@ -1,0 +1,41 @@
+@Library('ms-libry') _
+
+pipeline{
+
+agent any
+
+tools{
+maven 'maven3.8.4'
+
+}
+
+triggers{
+pollSCM('* * * * *')
+}
+
+options{
+timestamps()
+buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '5', daysToKeepStr: '', numToKeepStr: '5'))
+}
+
+stages{
+
+  stage('CheckOutCode'){
+    steps{
+        git credentialsId: 'git', url: 'https://github.com/shekar55/maven-web-application1.git'
+	}
+  }
+    stage('run unit test'){
+    steps{
+        build("Test")
+  }
+  
+    }
+  
+  stage('Build'){
+  steps{
+     build("Package")
+  }
+  }
+}
+}
